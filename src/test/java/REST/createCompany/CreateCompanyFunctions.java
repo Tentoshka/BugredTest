@@ -18,9 +18,9 @@ public class CreateCompanyFunctions extends CreateCompanyTestBase {
         addAttachMessage(jsonPath);
 
         assert jsonPath.getString("type").equals("success") : "Company creating failed";
-        assert jsonPath.getString("company.name").equals(companyName) : "Company names not equals";
-        assert jsonPath.getString("company.type").equals(companyType) : "Company types not equals";
-        assert Arrays.equals(gettingUsers, companyUsers) : "Company users not equals";
+        assert jsonPath.getString("company.name").equals(companyName) : "Company names does not match";
+        assert jsonPath.getString("company.type").equals(companyType) : "Company types does not match";
+        assert Arrays.equals(gettingUsers, companyUsers) : "Company users does not match";
     }
 
     @Step("Asserting getting and correctly generated data")
