@@ -46,9 +46,9 @@ public class CreateCompanyTestBase implements TestBase {
 
     @Step("Generate JSON Data")
     private String generateJSONData(String companyName, String companyType, String[] companyUsers, String emailOwner) {
-        return  "    \"company_name\": \"" + companyName + "\",\n" +
-                "    \"company_type\": \"" + companyType + "\",\n" +
-                "    \"company_users\": " + Arrays.toString(companyUsers) + ",\n" +
-                "    \"email_owner\": \"" + emailOwner + "\"";
+        return  "    \"" + path.companyName + "\": \"" + companyName + "\",\n" +
+                "    \"" + path.companyType + "\": \"" + companyType + "\",\n" +
+                "    \"" + path.companyUsers + "\": " + Arrays.toString(companyUsers) + ",\n" +
+                "    \"" + path.emailOwner + "\": \"" + emailOwner + "\"";
     }
 }

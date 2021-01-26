@@ -47,8 +47,8 @@ public class DoRegisterTestBase implements TestBase {
 
     @Step("Generate JSON Data")
     private String generateJSONData(String email, String name, String password) {
-        return  "    \"email\": \"" + email + "\",\n" +
-                "    \"name\": \"" + name + "\",\n" +
-                "    \"password\": \"" + password + "\"";
+        return  "    \"" + path.email +"\": \"" + email + "\",\n" +
+                "    \"" + path.name + "\": \"" + name + "\",\n" +
+                "    \"" + path.password + "\": \"" + password + "\"";
     }
 }

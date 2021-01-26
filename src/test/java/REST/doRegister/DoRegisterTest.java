@@ -49,7 +49,8 @@ public class DoRegisterTest extends DoRegisterFunctions {
     @Test(description = "Large Password Test", priority = 2)
     @Severity(SeverityLevel.NORMAL)
     public void largePasswordTest() {
-        JsonPath res = createPOST(email, name, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed commodo, nisi id faucibus gravida, est lorem ullamcorper tellus, vel congue lectus magna id dolor. Nullam gravida a risus quis semper. Nunc felis turpis, sagittis eu lacus vel, cursus sodales dolor. Mauris ac eleifend lacus, cursus rhoncus ligula. Vestibulum et porta.");
+        String logPsw = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed commodo, nisi id faucibus gravida, est lorem ullamcorper tellus, vel congue lectus magna id dolor. Nullam gravida a risus quis semper. Nunc felis turpis, sagittis eu lacus vel, cursus sodales dolor. Mauris ac eleifend lacus, cursus rhoncus ligula. Vestibulum et porta.";
+        JsonPath res = createPOST(email, name, logPsw);
 
         assertIncorrectData(res);
     }

@@ -17,9 +17,9 @@ public class CreateCompanyFunctions extends CreateCompanyTestBase {
 
         addAttachMessage(jsonPath);
 
-        assert jsonPath.getString("type").equals("success") : "Company creating failed";
-        assert jsonPath.getString("company.name").equals(companyName) : "Company names not equals";
-        assert jsonPath.getString("company.type").equals(companyType) : "Company types not equals";
+        assert jsonPath.getString(path.type).equals("success") : "Company creating failed";
+        assert jsonPath.getString(path.company + "." + path.name).equals(companyName) : "Company names not equals";
+        assert jsonPath.getString(path.company + "." + path.type).equals(companyType) : "Company types not equals";
         assert Arrays.equals(gettingUsers, companyUsers) : "Company users not equals";
     }
 
@@ -28,14 +28,14 @@ public class CreateCompanyFunctions extends CreateCompanyTestBase {
 
         addAttachMessage(jsonPath);
 
-        assert jsonPath.getString("type").equals("error") : "Company creating successful";
+        assert jsonPath.getString(path.type).equals("error") : "Company creating successful";
     }
 
     @Step("Getting Users")
     private String[] getUsers(JsonPath jsonPath) {
         String[] gettingUsers = new String[companyUsers.length];
         for (int i = 0; i <  gettingUsers.length; i++) {
-            gettingUsers[i] = jsonPath.getString("company.users[" + i + "]");
+            gettingUsers[i] = jsonPath.getString(path.company + "." + path.users + "[" + i + "]");
         }
         return gettingUsers;
     }

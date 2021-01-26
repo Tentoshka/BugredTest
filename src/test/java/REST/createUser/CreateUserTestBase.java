@@ -69,22 +69,23 @@ public class CreateUserTestBase implements TestBase {
                 extract().jsonPath();
     }
 
-    private String generateJSONDataWithGender(String email, String name, int[] tasks, int[] companies, String gender) {
-        return  generateSimpleJSONData(email, name, tasks, companies) + ",\n"
-                + "    \"gender\":" + gender;
-    }
-
     @Step("Generating Simple JSON Data")
     private String generateSimpleJSONData(String email, String name, int[] tasks, int[] companies) {
-        return  "    \"email\": \"" + email + "\",\n" +
-                "    \"tasks\": " + Arrays.toString(tasks) + ",\n" +
-                "    \"name\": \"" + name + "\",\n" +
-                "    \"companies\":" + Arrays.toString(companies);
+        return  "    \"" + path.email + "\": \"" + email + "\",\n" +
+                "    \"" + path.tasks + "\": " + Arrays.toString(tasks) + ",\n" +
+                "    \"" + path.name + "\": \"" + name + "\",\n" +
+                "    \"" + path.companies + "\":" + Arrays.toString(companies);
     }
 
     @Step("Generating JSON Data with INN")
     private String generateJSONDataWithINN(String email, String name, int[] tasks, int[] companies, String inn) {
         return  generateSimpleJSONData(email, name, tasks, companies) + ",\n"
-                + "    \"inn\":" + inn;
+                + "    \"" + path.inn + "\":" + inn;
+    }
+
+    @Step("Generating JSON Data with Gender")
+    private String generateJSONDataWithGender(String email, String name, int[] tasks, int[] companies, String gender) {
+        return  generateSimpleJSONData(email, name, tasks, companies) + ",\n"
+                + "    \"" + path.gender + "\":" + gender;
     }
 }

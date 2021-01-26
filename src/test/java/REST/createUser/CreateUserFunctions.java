@@ -20,8 +20,8 @@ public class CreateUserFunctions extends CreateUserTestBase {
 
         addAttachMessage(jsonPath);
 
-        assert jsonPath.getString("email").equals(email) : "Emails not equals";
-        assert jsonPath.getString("name").equals(name) : "Names not equals";
+        assert jsonPath.getString(path.email).equals(email) : "Emails not equals";
+        assert jsonPath.getString(path.name).equals(name) : "Names not equals";
         assert Arrays.equals(gettingTasks, tasks) : "Tasks not equals";
         assert Arrays.equals(gettingCompanies, companies) : "Companies not equals";
     }
@@ -30,13 +30,13 @@ public class CreateUserFunctions extends CreateUserTestBase {
     public void assertIncorrectData(JsonPath jsonPath) {
         addAttachMessage(jsonPath);
 
-        assert jsonPath.getString("email") == null : "User creating successful";
+        assert jsonPath.getString(path.message) != null : "User creating successful";
     }
 
     @Step("Getting Tasks")
     private int[] getTasks(JsonPath jsonPath) {
         int[] gettingTasks = new int[tasks.length];
-        gettingTasks = getData(jsonPath, "tasks", gettingTasks.length);
+        gettingTasks = getData(jsonPath, path.tasks, gettingTasks.length);
         Arrays.sort(gettingTasks);
         return gettingTasks;
     }
@@ -44,7 +44,7 @@ public class CreateUserFunctions extends CreateUserTestBase {
    @Step("Getting Companies")
    private int[] getCompanies(JsonPath jsonPath) {
        int[] gettingCompanies = new int[companies.length];
-       gettingCompanies = getData(jsonPath, "companies", gettingCompanies.length);
+       gettingCompanies = getData(jsonPath, path.companies, gettingCompanies.length);
        Arrays.sort(gettingCompanies);
        return gettingCompanies;
    }
