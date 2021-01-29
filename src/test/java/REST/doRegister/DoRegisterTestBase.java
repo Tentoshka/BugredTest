@@ -35,9 +35,9 @@ public class DoRegisterTestBase implements TestBase {
     @Step("Create and Send POST")
     public JsonPath createPOST(String email, String name, String password) {
         return given().
-                    contentType("application/json").body("{\n" +
-                    generateJSONData(email, name, password) + "\n" +
-                    "}").
+                    contentType("application/json").body(
+                            createJSONRequest(generateJSONData(email, name, password))
+                ).
                 when().
                     post(DO_REGISTER_URL).
                 then().

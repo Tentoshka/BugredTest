@@ -33,9 +33,9 @@ public class CreateUserTestBase implements TestBase {
     @Step("Create and Send POST")
     public JsonPath createSimplePOST(String email, String name, int[] tasks, int[] companies) {
         return given().
-                   contentType("application/json").body("{ \n" +
-                   generateSimpleJSONData(email, name, tasks, companies) + "\n" +
-                   "}").
+                   contentType("application/json").body(
+                           createJSONRequest(generateSimpleJSONData(email, name, tasks, companies))
+                    ).
                when().
                    post(CREATE_USER_URL).
                then().
@@ -46,9 +46,9 @@ public class CreateUserTestBase implements TestBase {
     @Step("Create and Send POST with INN")
     public JsonPath createPOSTWithINN(String email, String name, int[] tasks, int[] companies, String inn) {
         return given().
-                   contentType("application/json").body("{\n" +
-                   generateJSONDataWithINN(email, name, tasks, companies, inn) + "\n" +
-                   "}").
+                   contentType("application/json").body(
+                           createJSONRequest(generateJSONDataWithINN(email, name, tasks, companies, inn))
+                    ).
                when().
                    post(CREATE_USER_URL).
                then().
@@ -59,9 +59,9 @@ public class CreateUserTestBase implements TestBase {
     @Step("Create and Send POST with Gender")
     public JsonPath createSimplePOSTWithGender(String email, String name, int[] tasks, int[] companies, String gender) {
         return given().
-                contentType("application/json").body("{\n" +
-                generateJSONDataWithGender(email, name, tasks, companies, gender) + "\n" +
-                "}").
+                contentType("application/json").body(
+                        createJSONRequest(generateJSONDataWithGender(email, name, tasks, companies, gender))
+                ).
                 when().
                 post(CREATE_USER_URL).
                 then().

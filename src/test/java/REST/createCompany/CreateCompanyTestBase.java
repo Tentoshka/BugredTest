@@ -34,9 +34,9 @@ public class CreateCompanyTestBase implements TestBase {
     @Step("Create and Send POST")
     public JsonPath createPOST(String companyName, String companyType, String[] companyUsers, String emailOwner) {
         return given().
-                    contentType("application/json").body("{ \n" +
-                    generateJSONData(companyName, companyType, companyUsers, emailOwner) + "\n" +
-                    "}").
+                    contentType("application/json").body(
+                            createJSONRequest(generateJSONData(companyName, companyType, companyUsers, emailOwner))
+                    ).
                 when().
                     post(CREATE_COMPANY_URL).
                 then().

@@ -13,4 +13,10 @@ public interface TestBase {
         if (jsonPath.getString("message") != null)
             Allure.addAttachment("Error message", "text/plain", jsonPath.getString("message"));
     }
+
+    default String createJSONRequest(String JSONData) {
+        return "{ \n" +
+                JSONData + "\n" +
+                "}";
+    }
 }
