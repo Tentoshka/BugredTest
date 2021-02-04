@@ -1,22 +1,31 @@
 package REST;
 
-import REST.Paths.Paths;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javafaker.Faker;
 import io.qameta.allure.Allure;
-import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import REST.model.Error;
+import model.SimpleModel;
 
 public interface TestBase {
     String BASE_URL = "http://users.bugred.ru/";
+    ObjectMapper mapper = new ObjectMapper();
+    Faker faker = new Faker();
 
-    Paths path = new Paths();
-
-    default void addAttachMessage (JsonPath jsonPath) {
-        if (jsonPath.getString("message") != null)
-            Allure.addAttachment("Error message", "text/plain", jsonPath.getString("message"));
+    default void addAttachMessage (Response response) {
+        Allure.addAttachment("Get JSON", "application/json", response.asPrettyString());
     }
 
-    default String createJSONRequest(String JSONData) {
-        return "{ \n" +
-                JSONData + "\n" +
-                "}";
+    default Error getError(Response response) throws JsonProcessingException {
+        return mapper.readValue(response.asString(), Error.class);
+    }
+
+    default void assertModelWithClass(SimpleModel model) {
+        assert !(model instanceof  Error) : "Error";
+    }
+
+    default void assertModelWithClassError(SimpleModel model) {
+        assert model instanceof  Error : "Success";
     }
 }

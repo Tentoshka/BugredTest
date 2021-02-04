@@ -1,29 +1,25 @@
 package REST.doRegister;
 
 import REST.TestBase;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
+import controller.RegisterController;
 import io.qameta.allure.Step;
-import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import model.Register;
+import model.SimpleModel;
+import REST.model.SuccessfulRegister;
 import org.testng.annotations.BeforeMethod;
 
-import static io.restassured.RestAssured.given;
-
-/**
- * @author Tentoshka
- */
 
 public class DoRegisterTestBase implements TestBase {
-    final String DO_REGISTER_URL = BASE_URL + "tasks/rest/doregister";
-    final String AVATAR = BASE_URL + "/tmp/default_avatar.jpg";
-    final int birthday = 0;
-    final String gender = "";
-    final int date_start = 0;
-    final String hobby = "";
+    RegisterController controller = new RegisterController();
 
-    Faker faker = new Faker();
     String email;
     String name;
     String password;
+
+    Register register;
 
     @BeforeMethod(description = "Generating Data")
     public void generateData() {
@@ -32,23 +28,25 @@ public class DoRegisterTestBase implements TestBase {
         password = faker.internet().password();
     }
 
-    @Step("Create and Send POST")
-    public JsonPath createPOST(String email, String name, String password) {
-        return given().
-                    contentType("application/json").body(
-                            createJSONRequest(generateJSONData(email, name, password))
-                ).
-                when().
-                    post(DO_REGISTER_URL).
-                then().
-                    statusCode(200).
-                extract().jsonPath();
+    @Step("Generate JSON Data")
+    public void createRegisterPOST(String email, String name, String password) {
+        register = new Register(email, name, password);
     }
 
-    @Step("Generate JSON Data")
-    private String generateJSONData(String email, String name, String password) {
-        return  "    \"" + path.email +"\": \"" + email + "\",\n" +
-                "    \"" + path.name + "\": \"" + name + "\",\n" +
-                "    \"" + path.password + "\": \"" + password + "\"";
+    @Step("Send POST")
+    public Response sendPOST() {
+        return controller.createSimplePOST(register);
+    }
+
+    @Step("Getting RegisterResult")
+    public SimpleModel getResult(Response response) throws JsonProcessingException {
+        SimpleModel result;
+        addAttachMessage(response);
+        if (response.body().jsonPath().get("type") == null) {
+            result = mapper.readValue(response.asString(), SuccessfulRegister.class);
+        } else {
+            result = getError(response);
+        }
+        return result;
     }
 }

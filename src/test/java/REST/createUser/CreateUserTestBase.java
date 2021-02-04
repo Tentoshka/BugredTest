@@ -1,28 +1,25 @@
 package REST.createUser;
 
 import REST.TestBase;
+import REST.model.SuccessfulUser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
+import controller.UserController;
 import io.qameta.allure.Step;
-import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import model.SimpleModel;
+import model.User;
 import org.testng.annotations.BeforeMethod;
 
-import java.util.Arrays;
-
-import static io.restassured.RestAssured.given;
-
-/**
- * @author Tentoshka
- */
-
 public class CreateUserTestBase implements TestBase {
-    final String CREATE_USER_URL = BASE_URL + "tasks/rest/createuser";
+    UserController controller = new UserController();
 
-    Faker faker = new Faker();
     String email;
     String name;
-    int[] tasks = {12};
-    int[] companies = {36, 37};
+
     String inn = "123456789012";
+
+    User user;
 
     @BeforeMethod(description = "Generating Data")
     public void generateData() {
@@ -30,62 +27,30 @@ public class CreateUserTestBase implements TestBase {
         name = faker.name().username();
     }
 
-    @Step("Create and Send POST")
-    public JsonPath createSimplePOST(String email, String name, int[] tasks, int[] companies) {
-        return given().
-                   contentType("application/json").body(
-                           createJSONRequest(generateSimpleJSONData(email, name, tasks, companies))
-                    ).
-               when().
-                   post(CREATE_USER_URL).
-               then().
-                   statusCode(200).
-               extract().jsonPath();
+    @Step("Generate JSON Data")
+    public void createUserPOST(String email, String name) {
+        user = new User(email, name);
     }
 
-    @Step("Create and Send POST with INN")
-    public JsonPath createPOSTWithINN(String email, String name, int[] tasks, int[] companies, String inn) {
-        return given().
-                   contentType("application/json").body(
-                           createJSONRequest(generateJSONDataWithINN(email, name, tasks, companies, inn))
-                    ).
-               when().
-                   post(CREATE_USER_URL).
-               then().
-                   statusCode(200).
-               extract().jsonPath();
+    @Step("Generate JSON Data With INN")
+    public void createUserPOSTWithInn(String email, String name, String inn) {
+        user = new User(email, name, inn);
     }
 
-    @Step("Create and Send POST with Gender")
-    public JsonPath createSimplePOSTWithGender(String email, String name, int[] tasks, int[] companies, String gender) {
-        return given().
-                contentType("application/json").body(
-                        createJSONRequest(generateJSONDataWithGender(email, name, tasks, companies, gender))
-                ).
-                when().
-                post(CREATE_USER_URL).
-                then().
-                statusCode(200).
-                extract().jsonPath();
+    @Step("Send POST")
+    public Response sendPOST() {
+        return controller.createSimplePOST(user);
     }
 
-    @Step("Generating Simple JSON Data")
-    private String generateSimpleJSONData(String email, String name, int[] tasks, int[] companies) {
-        return  "    \"" + path.email + "\": \"" + email + "\",\n" +
-                "    \"" + path.tasks + "\": " + Arrays.toString(tasks) + ",\n" +
-                "    \"" + path.name + "\": \"" + name + "\",\n" +
-                "    \"" + path.companies + "\":" + Arrays.toString(companies);
-    }
-
-    @Step("Generating JSON Data with INN")
-    private String generateJSONDataWithINN(String email, String name, int[] tasks, int[] companies, String inn) {
-        return  generateSimpleJSONData(email, name, tasks, companies) + ",\n"
-                + "    \"" + path.inn + "\":" + inn;
-    }
-
-    @Step("Generating JSON Data with Gender")
-    private String generateJSONDataWithGender(String email, String name, int[] tasks, int[] companies, String gender) {
-        return  generateSimpleJSONData(email, name, tasks, companies) + ",\n"
-                + "    \"" + path.gender + "\":" + gender;
+    @Step("Getting RegisterResult")
+    public SimpleModel getResult(Response response) throws JsonProcessingException {
+        SimpleModel result;
+        addAttachMessage(response);
+        if (response.body().jsonPath().get("type") == null) {
+            result = mapper.readValue(response.asString(), SuccessfulUser.class);
+        } else {
+            result = getError(response);
+        }
+        return result;
     }
 }
